@@ -26,36 +26,39 @@ namespace assignment {
 
     assert(index >= -1 && mask >= 0 && sum >= 0 && residual >= 0 && target_sum > 0);
 
-    // Ограничение 0: вышли за пределы множества
-    if (index == static_cast<int>(set.size())) {
-      return;
-    }
-
     // Ограничение 1: текущая сумма должна быть меньше целевой
-    if (true /* ... */) {
-      // если превысили целевую сумму, то сделать ее меньше уже не получится (все элементы множества положительные)
+    if (sum > target_sum) {
       return;
     }
 
     // Ограничение 2: "остаточная сумма" + "текущая сумма" должны быть больше или равны "целевой сумме"
-    if (true /* ... */) {
-      // сумму невозможно будет набрать с оставшимися элементами множества
+    if (sum + residual < target_sum) {
       return;
     }
 
     // если найдено подмножество с целевой суммой, то сохраняем в результат это подмножество
     if (sum == target_sum) {
-      // ... сохранение в результат
-      // ... нужно ли в этой ветке рекурсии рассматривать следующие элементы?
+      std::vector<int> res;
+      for(int pos = 0; pos < set.size(); pos++) {
+        if(is_bit_set(mask, pos)) res.push_back(pos);
+      }
+      indices.push_back(res);
     }
 
     // рассматриваем следующий элемент
     index += 1;
 
+    // Ограничение 0: вышли за пределы множества
+    if (index == static_cast<int>(set.size())) {
+      return;
+    }
+
     // обновляется несмотря на включение/исключение элемента => почему?
     residual -= set[index];
 
     // рекурсивный вызов со включением/исключением элемента с текущим индексом ...
+    search(set, index, mask, sum, residual, target_sum, indices);
+    search(set, index, mask | (1 << index), sum + set[index], residual, target_sum, indices);
   }
 
 }  // namespace assignment
