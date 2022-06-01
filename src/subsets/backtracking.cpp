@@ -12,8 +12,7 @@ namespace assignment {
     const auto num_elems = static_cast<int>(set.size());  // N
     const int num_subsets = 1 << num_elems;               // 2^N
 
-    auto subsets = std::vector<std::vector<int>>();
-    subsets.reserve(num_subsets);
+    auto subsets = std::vector<std::vector<int>>(num_subsets);
 
     // вызов вспомогательной функции: обратите внимание на начальное значение индекса и маски
     generate(set, -1, 0, subsets);
@@ -27,16 +26,18 @@ namespace assignment {
 
     // Ограничение: рассмотрены все элементы множества
     if (index == static_cast<int>(set.size()) - 1) {
-
-      // ... сохранение полученного подмножества
-
+      std::vector<int> res;
+      for(int pos = 0; pos < set.size(); pos++) {
+        if(is_bit_set(mask, pos)) res.push_back(pos);
+      }
+      subsets[mask] = res;
       return;  // возвращаемся по дереву рекурсии
     }
 
     index += 1;  // рассматриваем следующий элемент
 
-    // здесь должны быть рекурсивные вызовы ...
-    // включаем или не включаем элемент с текущим индексом в подмножество (используя битовую маску)
+    generate(set, index, mask, subsets);
+    generate(set, index, mask + (1 << index), subsets);
   }
 
 }  // namespace assignment

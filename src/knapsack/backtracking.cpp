@@ -23,11 +23,6 @@ namespace assignment {
   void KnapsackBacktracking::solve(const Profits& profits, const Weights& weights, int capacity, int index, int mask,
                                    int weight, int profit, int& best_profit, int& best_profit_mask) const {
 
-    // Ограничение 0: выход за пределы
-    if (index == static_cast<int>(profits.size())) {
-      return;
-    }
-
     // Ограничение 1: превышение лимита емкости рюкзака
     if (weight > capacity) {
       return;
@@ -35,13 +30,22 @@ namespace assignment {
 
     // ... если текущая "польза" максимальна, обновляем наилучшую "пользу"
     if (profit > best_profit) {
-      // ...
+      best_profit = profit;
+      best_profit_mask = mask;
     }
 
     // рассматриваем следующий элемент
     index += 1;
 
+    // Ограничение 0: выход за пределы
+    if (index == static_cast<int>(profits.size())) {
+      return;
+    }
+
     // ... рекурсивные вызовы со включением/исключением следующего элемента
+    solve(profits, weights, capacity, index, mask, weight, profit, best_profit, best_profit_mask);
+    solve(profits, weights, capacity, index, mask | (1 << index), weight + weights[index], profit + profits[index],
+            best_profit, best_profit_mask);
   }
 
 }  // namespace assignment
